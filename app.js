@@ -10,6 +10,6 @@ const paymentRoute = require('./routes/paymentRoute');
 // });
 app.use('/',paymentRoute);
 
-http.listen(3000, function(){
+http.listen(3600, function(){
     console.log('Server is running');
 });

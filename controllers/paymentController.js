@@ -86,7 +86,7 @@ const createCaptureCharges = async(req,res)=>{
         //     currency:'usd',
         //     card: req.body.card_id,
         //     customer: req.body.customer_id,
-        //     capture: true,
+        //     capture: false,
         // });
 
 
@@ -99,6 +99,34 @@ const createCaptureCharges = async(req,res)=>{
 
         // ## Note: 
         // Uncaptured PaymentIntents will be canceled a set number of days after they are created (7 by default).
+
+
+
+        // ***********************
+        // ***********************
+        // Place a hold on a payment method
+        // https://stripe.com/docs/payments/place-a-hold-on-a-payment-method
+
+        // Placing a hold on a card -> Charges API
+        // https://stripe.com/docs/charges/placing-a-hold
+
+        // Accept a payment
+        // https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=elements
+
+        // Save payment details during payment
+        // https://stripe.com/docs/payments/save-during-payment?platform=web&client=react#charge-saved-payment-method
+
+        // https://stackoverflow.com/questions/58407657/stripe-intent-api-hold-card-and-then-charge-not-working
+
+
+        // https://stripe.com/docs/stripe-js/react
+        // https://stripe.com/docs/stripe-js/react#useelements-hook
+        // https://stripe.com/docs/js
+        // https://stripe.com/docs/js/setup_intents/confirm_setup
+
+
+
+        // ***********************
 
 
         // ## Create a PaymentIntent
@@ -115,32 +143,52 @@ const createCaptureCharges = async(req,res)=>{
         //     receipt_email: "masud@gmail.com",
         // });
 
+
+        // =>>  create intent 
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: 1200,
+            customer: req.body.customer_id,
+            amount: 1500,
             currency: 'usd',
-            payment_method_types: ['card'],
-            capture_method: 'manual',
-          });
+            automatic_payment_methods: {
+                enabled: false,
+                allow_redirects: 'never'
+            },
+            // capture_method: 'manual',
+            // confirm: true,
+            payment_method: req.body.card_id
+        });
+
             
+
+        // => capture the amount
+        // const intent = await stripe.paymentIntents.capture(
+        //     "pi_3NWdmYIIQpgUe9ST1MR3SjAh",{
+        //         amount_to_capture: 3000
+        //     }
+        // );
+
+        // const intent = await stripe.paymentIntents.capture("pi_3NWdmYIIQpgUe9ST1MR3SjAh");
+        // const intent = await stripe.paymentIntents.confirm("pi_3NWdmYIIQpgUe9ST1MR3SjAh");
+
 
         
         // ## Retrieve a PaymentIntent
         // https://stripe.com/docs/api/payment_intents/retrieve
 
         // const paymentIntent = await stripe.paymentIntents.retrieve(
-        //     'pi_3NW2BwIIQpgUe9ST0N1nGsqU'
+        //     'pi_3NWdN2IIQpgUe9ST1lcX8vpl'
         // );
 
 
 
             
-        // ## update a PaymentIntent
+        // => update a PaymentIntent
         // https://stripe.com/docs/api/payment_intents/update
 
-        // const paymentIntent = await stripe.paymentIntents.update(
-        //     'pi_3NW2BwIIQpgUe9ST0N1nGsqU',
+        // const paymentIntentUpdate = await stripe.paymentIntents.update(
+        //     "pi_3NWdy5IIQpgUe9ST01IYj2ol",
         //     {
-        //         amount: 120,
+        //         amount: 35000,
         //     }
         // );
             
@@ -172,8 +220,31 @@ const createCaptureCharges = async(req,res)=>{
         // https://stripe.com/docs/payments/place-a-hold-on-a-payment-method
         // Separate payment authorization and capture to create a charge now, but capture funds later.
 
+        
+
+
+        //////////////////////////
+        // change the saved customer
+        //////////////////////////
+        // const paymentMethods = await stripe.paymentMethods.list({
+        //     customer: 'cus_OJGJwXUapPq7UB',
+        //     type: 'card',
+        // });
+
+        // const paymentIntent = await stripe.paymentIntents.create({
+        //     amount: 5000,
+        //     currency: 'gbp',
+        //     automatic_payment_methods: {enabled: true},
+        //     customer: 'cus_OJGJwXUapPq7UB',
+        //     payment_method: paymentMethods.data[0].id,
+        //     off_session: true,
+        //     confirm: true,
+        //   });
+
 
         res.status(200).send(paymentIntent);
+        // res.status(200).send(paymentIntent);
+        // res.status(200).send(intent);
 
     } catch (error) {
         res.status(400).send({success:false,msg:error.message});
