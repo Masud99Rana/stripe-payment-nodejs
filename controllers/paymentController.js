@@ -124,6 +124,13 @@ const createCaptureCharges = async(req,res)=>{
         // https://stripe.com/docs/js
         // https://stripe.com/docs/js/setup_intents/confirm_setup
 
+        // Set up future payments
+        // https://stripe.com/docs/payments/save-and-reuse?platform=react-native&ui=payment-sheet
+
+
+        
+        // https://saasbase.dev/blog/subscription-payments-1-adding-basic-and-pro-subscription-plans-using-stripe
+
 
 
         // ***********************
